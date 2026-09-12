@@ -1,0 +1,18 @@
+{
+  "name": "sudoku",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Responsive Sudoku game for mobile",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/sudoku.test.js",
+    "start": "python3 -m http.server 4173",
+    "build": "node -e \"console.log('Static site: no build step.')\"",
+    "deploy": "npx --yes wrangler@4 deploy",
+    "dev:cf": "npx --yes wrangler@4 dev"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
