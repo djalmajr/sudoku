@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#12141a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="Play Sudoku in the browser. Mobile-first, no account." />
+    <title>Sudoku</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>Sudoku</h1>
+        <label>
+          <span class="visually-hidden">Difficulty</span>
+          <select id="difficulty" aria-label="Difficulty">
+            <option value="easy" selected>Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+      </header>
+
+      <div class="toolbar">
+        <button type="button" class="primary" id="new-game">New game</button>
+        <button type="button" class="ghost" id="check">Check</button>
+      </div>
+
+      <p id="status" role="status"></p>
+
+      <div id="board" role="grid" aria-label="Sudoku board"></div>
+
+      <div id="pad" aria-label="Number pad"></div>
+
+      <div class="actions">
+        <button type="button" id="clear-cell">Clear cell</button>
+      </div>
+    </div>
+
+    <div id="win" hidden>
+      <div class="win-card" role="dialog" aria-labelledby="win-title">
+        <h2 id="win-title">You solved it</h2>
+        <p>Nice work. Start another puzzle when you are ready.</p>
+        <button type="button" class="primary" id="win-new">New game</button>
+      </div>
+    </div>
+
+    <style>
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+    </style>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
