@@ -68,7 +68,9 @@ function buildBoard() {
       els.board.appendChild(btn);
     }
   }
-  els.board.addEventListener("click", (ev) => ev.stopPropagation());
+  const stop = (ev) => ev.stopPropagation();
+  els.board.addEventListener("click", stop);
+  els.board.addEventListener("pointerdown", stop);
 }
 
 function buildPad() {
@@ -86,7 +88,9 @@ function buildPad() {
     });
     els.pad.appendChild(btn);
   }
-  els.pad.addEventListener("click", (ev) => ev.stopPropagation());
+  const stop = (ev) => ev.stopPropagation();
+  els.pad.addEventListener("click", stop);
+  els.pad.addEventListener("pointerdown", stop);
 }
 
 function select(r, c) {
@@ -100,10 +104,15 @@ function onPadDigit(n) {
   if (!game) return;
   if (selected) {
     const { r, c } = selected;
-    // Same digit as the focused cell → clear board selection.
+    // Same digit as focused cell → clear the cell value, keep board focus.
     if (game.board[r][c] === n) {
-      clearFocus();
-      setStatus("Selection cleared. Tap a cell or a number.");
+      if (game.given[r][c]) {
+        setStatus("That cell is a clue.", "warn");
+        return;
+      }
+      game.board[r][c] = EMPTY;
+      checkMode = false;
+      afterMove();
       return;
     }
     enterDigit(n);

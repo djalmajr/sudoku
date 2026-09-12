@@ -180,8 +180,7 @@ button:active {
 
 .cell.selected {
   background: #31415c;
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px var(--accent);
   z-index: 1;
 }
 
@@ -276,14 +275,13 @@ button:active {
 }
 
 .cell.digit-hit {
+  /* Match .same fill — no outline (avoids layout/paint shift vs filled cells) */
   background: var(--same);
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
+  box-shadow: inset 0 0 0 2px var(--accent);
   z-index: 1;
 }
 
 .pad-key.active-filter {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
   background: #31415c;
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
