@@ -23,7 +23,10 @@ const els = {
 
 /** @type {{ puzzle: number[][], given: boolean[][], board: number[][], difficulty: string }} */
 let game = null;
-let selected = { r: 0, c: 0 };
+/** @type {{ r: number, c: number } | null } */
+let selected = null;
+/** @type {number | null} highlight digit when no cell is focused */
+let digitFilter = null;
 let checkMode = false;
 
 function setStatus(msg, kind = "") {
@@ -33,6 +36,13 @@ function setStatus(msg, kind = "") {
 
 function cellId(r, c) {
   return `cell-${r}-${c}`;
+}
+
+function clearFocus() {
+  selected = null;
+  digitFilter = null;
+  checkMode = false;
+  render();
 }
 
 function buildBoard() {
@@ -51,10 +61,14 @@ function buildBoard() {
       if (r % 3 === 0) btn.classList.add("box-top");
       if (c === SIZE - 1) btn.classList.add("box-right");
       if (r === SIZE - 1) btn.classList.add("box-bottom");
-      btn.addEventListener("click", () => select(r, c));
+      btn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        select(r, c);
+      });
       els.board.appendChild(btn);
     }
   }
+  els.board.addEventListener("click", (ev) => ev.stopPropagation());
 }
 
 function buildPad() {
@@ -66,19 +80,48 @@ function buildPad() {
     btn.dataset.digit = String(n);
     btn.innerHTML = `<span class="pad-n">${n}</span><span class="pad-left" data-left="${n}"></span>`;
     btn.setAttribute("aria-label", `Enter ${n}`);
-    btn.addEventListener("click", () => enterDigit(n));
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      onPadDigit(n);
+    });
     els.pad.appendChild(btn);
   }
+  els.pad.addEventListener("click", (ev) => ev.stopPropagation());
 }
 
 function select(r, c) {
   selected = { r, c };
+  digitFilter = null;
   checkMode = false;
   render();
 }
 
-function enterDigit(n) {
+function onPadDigit(n) {
   if (!game) return;
+  if (selected) {
+    const { r, c } = selected;
+    // Same digit as the focused cell → clear board selection.
+    if (game.board[r][c] === n) {
+      clearFocus();
+      setStatus("Selection cleared. Tap a cell or a number.");
+      return;
+    }
+    enterDigit(n);
+    return;
+  }
+  // No cell focused: highlight all n's and their rows/cols.
+  digitFilter = digitFilter === n ? null : n;
+  checkMode = false;
+  render();
+  if (digitFilter) {
+    setStatus(`Highlighting ${n}. Tap a cell to play, or outside the board to clear.`);
+  } else {
+    setStatus("Tap a cell, then a number.");
+  }
+}
+
+function enterDigit(n) {
+  if (!game || !selected) return;
   const { r, c } = selected;
   if (game.given[r][c]) {
     setStatus("That cell is a clue.", "warn");
@@ -90,7 +133,10 @@ function enterDigit(n) {
 }
 
 function clearCell() {
-  if (!game) return;
+  if (!game || !selected) {
+    setStatus("Select a cell first.", "warn");
+    return;
+  }
   const { r, c } = selected;
   if (game.given[r][c]) {
     setStatus("Cannot clear a clue.", "warn");
@@ -144,7 +190,6 @@ function newGame() {
   const difficulty = els.difficulty.value || "easy";
   setStatus("Generating puzzle…");
   showWin(false);
-  // Yield so the status paints on slower phones.
   requestAnimationFrame(() => {
     const { puzzle, given } = generatePuzzle(difficulty);
     game = {
@@ -154,6 +199,7 @@ function newGame() {
       difficulty,
     };
     selected = firstEmpty();
+    digitFilter = null;
     checkMode = false;
     render();
     setStatus(`${DIFFICULTY[difficulty].label} game. Tap a cell, then a number.`);
@@ -169,13 +215,33 @@ function firstEmpty() {
   return { r: 0, c: 0 };
 }
 
+function filterAxes(digit) {
+  const rows = new Set();
+  const cols = new Set();
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (game.board[r][c] === digit) {
+        rows.add(r);
+        cols.add(c);
+      }
+    }
+  }
+  return { rows, cols };
+}
+
 function render() {
   if (!game) return;
-  const { r: sr, c: sc } = selected;
-  const selectedValue = game.board[sr][sc];
   const bad = checkMode ? conflictCells(game.board) : null;
+  const hasCell = Boolean(selected);
+  const sr = hasCell ? selected.r : -1;
+  const sc = hasCell ? selected.c : -1;
+  const selectedValue = hasCell ? game.board[sr][sc] : EMPTY;
+  const filter = !hasCell && digitFilter ? digitFilter : null;
+  const axes = filter ? filterAxes(filter) : null;
   const sameBox = (r, c) =>
-    Math.floor(r / 3) === Math.floor(sr / 3) && Math.floor(c / 3) === Math.floor(sc / 3);
+    hasCell &&
+    Math.floor(r / 3) === Math.floor(sr / 3) &&
+    Math.floor(c / 3) === Math.floor(sc / 3);
 
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
@@ -183,14 +249,26 @@ function render() {
       const v = game.board[r][c];
       btn.textContent = v === EMPTY ? "" : String(v);
       btn.classList.toggle("given", game.given[r][c]);
-      btn.classList.toggle("selected", r === sr && c === sc);
-      btn.classList.toggle("peer", r === sr || c === sc || sameBox(r, c));
-      btn.classList.toggle(
-        "same",
-        selectedValue !== EMPTY && v === selectedValue && !(r === sr && c === sc),
-      );
+
+      let peer = false;
+      let same = false;
+      let isSelected = false;
+
+      if (hasCell) {
+        isSelected = r === sr && c === sc;
+        peer = r === sr || c === sc || sameBox(r, c);
+        same = selectedValue !== EMPTY && v === selectedValue && !isSelected;
+      } else if (filter) {
+        same = v === filter;
+        peer = axes.rows.has(r) || axes.cols.has(c);
+      }
+
+      btn.classList.toggle("selected", isSelected);
+      btn.classList.toggle("peer", peer);
+      btn.classList.toggle("same", same);
+      btn.classList.toggle("digit-hit", Boolean(filter && same));
       btn.classList.toggle("conflict", Boolean(bad && bad[r][c]));
-      btn.setAttribute("aria-pressed", r === sr && c === sc ? "true" : "false");
+      btn.setAttribute("aria-pressed", isSelected ? "true" : "false");
     }
   }
 
@@ -199,7 +277,13 @@ function render() {
     const n = Number(key.dataset.left);
     const rem = Math.max(0, left[n]);
     key.textContent = rem ? String(rem) : "";
-    key.parentElement.classList.toggle("done", rem === 0);
+    const padBtn = key.parentElement;
+    padBtn.classList.toggle("done", rem === 0);
+    padBtn.classList.toggle("active-filter", filter === n);
+    padBtn.setAttribute(
+      "aria-label",
+      hasCell ? `Enter ${n}` : `Highlight ${n} on the board`,
+    );
   }
 }
 
@@ -207,7 +291,13 @@ function onKey(ev) {
   if (!game) return;
   if (ev.key >= "1" && ev.key <= "9") {
     ev.preventDefault();
-    enterDigit(Number(ev.key));
+    onPadDigit(Number(ev.key));
+    return;
+  }
+  if (ev.key === "Escape") {
+    ev.preventDefault();
+    clearFocus();
+    setStatus("Selection cleared.");
     return;
   }
   if (ev.key === "Backspace" || ev.key === "Delete" || ev.key === "0" || ev.key === " ") {
@@ -215,6 +305,7 @@ function onKey(ev) {
     clearCell();
     return;
   }
+  if (!selected) return;
   const move = {
     ArrowUp: [-1, 0],
     ArrowDown: [1, 0],
@@ -227,12 +318,23 @@ function onKey(ev) {
   }
 }
 
+function onDocumentPointerDown(ev) {
+  const t = ev.target;
+  if (!(t instanceof Node)) return;
+  if (els.board.contains(t) || els.pad.contains(t)) return;
+  if (els.win.contains(t) && !els.win.hidden) return;
+  if (!selected && !digitFilter) return;
+  clearFocus();
+  setStatus("Selection cleared. Tap a cell or a number.");
+}
+
 els.newGame.addEventListener("click", newGame);
 els.check.addEventListener("click", checkBoard);
 els.clear.addEventListener("click", clearCell);
 els.difficulty.addEventListener("change", newGame);
 els.winNew.addEventListener("click", newGame);
 document.addEventListener("keydown", onKey);
+document.addEventListener("pointerdown", onDocumentPointerDown);
 
 buildBoard();
 buildPad();

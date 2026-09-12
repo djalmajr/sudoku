@@ -274,3 +274,16 @@ button:active {
     font-size: 1.6rem;
   }
 }
+
+.cell.digit-hit {
+  background: var(--same);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.pad-key.active-filter {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: #31415c;
+}
