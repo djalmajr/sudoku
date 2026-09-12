@@ -122,11 +122,6 @@ function onPadDigit(n) {
   digitFilter = digitFilter === n ? null : n;
   checkMode = false;
   render();
-  if (digitFilter) {
-    setStatus(`Highlighting ${n}. Tap a cell to play, or outside the board to clear.`);
-  } else {
-    setStatus("Tap a cell, then a number.");
-  }
 }
 
 function enterDigit(n) {
@@ -306,7 +301,6 @@ function onKey(ev) {
   if (ev.key === "Escape") {
     ev.preventDefault();
     clearFocus();
-    setStatus("Selection cleared.");
     return;
   }
   if (ev.key === "Backspace" || ev.key === "Delete" || ev.key === "0" || ev.key === " ") {
@@ -334,7 +328,6 @@ function onDocumentPointerDown(ev) {
   if (els.win.contains(t) && !els.win.hidden) return;
   if (!selected && !digitFilter) return;
   clearFocus();
-  setStatus("Selection cleared. Tap a cell or a number.");
 }
 
 els.newGame.addEventListener("click", newGame);
