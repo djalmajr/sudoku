@@ -33,11 +33,13 @@ styles/sudoku.css   # board/pad surfaces
 
 Static assets Worker. Custom domain: `sudoku.djalmajr.dev`.
 
+Every push to `main` deploys automatically via GitHub Actions (`.github/workflows/deploy.yml`). Manual:
+
 ```bash
 npm run deploy
 ```
 
-Requires Cloudflare auth (`wrangler login` or API token).
+Requires Cloudflare auth (`wrangler login` or API token) and repo secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` for CI.
 
 ## How to play
 
