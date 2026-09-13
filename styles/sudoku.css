@@ -47,12 +47,19 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
 }
 
 .sudoku-toolbar .diff {
   margin-left: auto;
-  min-width: 7.5rem;
+  display: flex;
+  align-items: stretch;
+}
+
+.sudoku-toolbar .diff > *,
+.sudoku-toolbar .diff select {
+  height: 100%;
+  min-height: 3rem;
 }
 
 .sudoku-board {
@@ -183,7 +190,7 @@ body {
 .sudoku-actions {
   display: flex;
   gap: 8px;
-  margin-top: auto;
+  margin-top: 0;
 }
 
 .sudoku-actions > * {
