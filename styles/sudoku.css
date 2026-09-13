@@ -60,6 +60,19 @@ body {
 .sudoku-toolbar .diff select {
   height: 100%;
   min-height: 3rem;
+  color: var(--sudoku-ink);
+  background-color: var(--sudoku-elev);
+}
+
+/* Native <select> popup often uses a light OS panel while inheriting
+   light page text — force light scheme + dark option ink. */
+.sudoku-toolbar .diff select {
+  color-scheme: light;
+}
+
+.sudoku-toolbar .diff select option {
+  background-color: #ffffff;
+  color: #12141a;
 }
 
 .sudoku-board {
