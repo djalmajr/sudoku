@@ -1,0 +1,10 @@
+# Files/folders under [assets].directory that must not be uploaded to Workers.
+# Wrangler Action installs wrangler into the workspace (creates node_modules).
+node_modules/
+.git/
+.github/
+.wrangler/
+.dev.vars
+*.log
+package-lock.json
+npm-debug.log*
