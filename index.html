@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -13,54 +13,89 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icons/icon-180.png" />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="app">
-      <div class="toolbar">
-        <button type="button" class="primary" id="new-game">New game</button>
-        <button type="button" class="ghost" id="check">Check</button>
-        <label class="diff">
-          <span class="visually-hidden">Difficulty</span>
-          <select id="difficulty" aria-label="Difficulty">
-            <option value="easy" selected>Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </label>
-      </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2/dist/iconify-icon.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/djalmajr/htm-ui@main/packages/ui/theme.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/djalmajr/htm-ui@main/packages/ui/ui.css"
+    />
+    <link rel="stylesheet" href="./styles/sudoku.css" />
+    <style type="text/tailwindcss">
+      @custom-variant dark (&:is(.dark *));
 
-      <div id="board" role="grid" aria-label="Sudoku board"></div>
+      @theme inline {
+        --font-sans: "Inter", system-ui, sans-serif;
+        --color-background: var(--background);
+        --color-foreground: var(--foreground);
+        --color-card: var(--card);
+        --color-card-foreground: var(--card-foreground);
+        --color-popover: var(--popover);
+        --color-popover-foreground: var(--popover-foreground);
+        --color-primary: var(--primary);
+        --color-primary-foreground: var(--primary-foreground);
+        --color-secondary: var(--secondary);
+        --color-secondary-foreground: var(--secondary-foreground);
+        --color-muted: var(--muted);
+        --color-muted-foreground: var(--muted-foreground);
+        --color-accent: var(--accent);
+        --color-accent-foreground: var(--accent-foreground);
+        --color-destructive: var(--destructive);
+        --color-destructive-foreground: var(--destructive-foreground);
+        --color-border: var(--border);
+        --color-input: var(--input);
+        --color-ring: var(--ring);
+        --color-chart-1: var(--chart-1);
+        --color-chart-2: var(--chart-2);
+        --color-chart-3: var(--chart-3);
+        --color-chart-4: var(--chart-4);
+        --color-chart-5: var(--chart-5);
+        --color-sidebar: var(--sidebar);
+        --color-sidebar-foreground: var(--sidebar-foreground);
+        --color-sidebar-primary: var(--sidebar-primary);
+        --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+        --color-sidebar-accent: var(--sidebar-accent);
+        --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+        --color-sidebar-border: var(--sidebar-border);
+        --color-sidebar-ring: var(--sidebar-ring);
+        --radius-sm: calc(var(--radius) - 4px);
+        --radius-md: calc(var(--radius) - 2px);
+        --radius-lg: var(--radius);
+        --radius-xl: calc(var(--radius) + 4px);
+      }
 
-      <div id="pad" aria-label="Number pad"></div>
-
-      <div class="actions">
-        <button type="button" id="clear-cell">Clear cell</button>
-      </div>
-    </div>
-
-    <canvas id="confetti" aria-hidden="true"></canvas>
-
-    <div id="win" hidden>
-      <div class="win-card" role="dialog" aria-labelledby="win-title">
-        <h2 id="win-title">You solved it</h2>
-        <p>Nice work. Start another puzzle when you are ready.</p>
-        <button type="button" class="primary" id="win-new">New game</button>
-      </div>
-    </div>
-
-    <style>
-      .visually-hidden {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        border: 0;
+      @layer base {
+        * {
+          @apply border-border outline-ring/50;
+        }
+        body {
+          @apply bg-background text-foreground font-sans;
+        }
       }
     </style>
-    <script type="module" src="./app.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "htm-ui": "https://cdn.jsdelivr.net/gh/djalmajr/htm-ui@main/packages/ui/index.js",
+          "htm-ui/": "https://cdn.jsdelivr.net/gh/djalmajr/htm-ui@main/packages/ui/",
+          "clsx": "https://esm.sh/clsx@2",
+          "tailwind-merge": "https://esm.sh/tailwind-merge@3",
+          "htm/preact": "https://esm.sh/htm@3/preact?external=preact",
+          "preact": "https://esm.sh/preact@10",
+          "preact/": "https://esm.sh/preact@10/",
+          "preact-iso": "https://esm.sh/preact-iso@2?external=preact"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>

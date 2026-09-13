@@ -1,0 +1,209 @@
+/* Sudoku board + pad — game-specific surfaces on top of htm-ui dark theme */
+:root {
+  --sudoku-bg: #12141a;
+  --sudoku-elev: #1b1e27;
+  --sudoku-ink: #f4f1ea;
+  --sudoku-muted: #9aa3b2;
+  --sudoku-line: #2a3140;
+  --sudoku-accent: #e8c547;
+  --sudoku-peer: #232836;
+  --sudoku-same: #3a3320;
+  --sudoku-given: #f4f1ea;
+  --sudoku-entry: #8ecae6;
+  --sudoku-danger: #ff6b6b;
+  --sudoku-pad: #252a36;
+  --sudoku-selected: #31415c;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--sudoku-bg);
+  color: var(--sudoku-ink);
+}
+
+.sudoku-app {
+  max-width: 440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: calc(100dvh - 24px - var(--safe-t) - var(--safe-b));
+  padding: calc(12px + var(--safe-t)) calc(12px + var(--safe-r))
+    calc(12px + var(--safe-b)) calc(12px + var(--safe-l));
+}
+
+.sudoku-toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sudoku-toolbar .diff {
+  margin-left: auto;
+  min-width: 7.5rem;
+}
+
+.sudoku-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background: var(--sudoku-elev);
+  border: 3px solid var(--sudoku-ink);
+  border-radius: 8px;
+  overflow: hidden;
+  align-self: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sudoku-cell {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--sudoku-line);
+  border-bottom: 1px solid var(--sudoku-line);
+  font-size: clamp(1.05rem, 4.6vw, 1.55rem);
+  font-weight: 650;
+  color: var(--sudoku-entry);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sudoku-cell.box-left {
+  border-left: 2px solid var(--sudoku-ink);
+}
+.sudoku-cell.box-top {
+  border-top: 2px solid var(--sudoku-ink);
+}
+.sudoku-cell.box-right {
+  border-right: 2px solid var(--sudoku-ink);
+}
+.sudoku-cell.box-bottom {
+  border-bottom: 2px solid var(--sudoku-ink);
+}
+
+.sudoku-cell.given {
+  color: var(--sudoku-given);
+  font-weight: 750;
+}
+
+.sudoku-cell.peer {
+  background: var(--sudoku-peer);
+}
+
+.sudoku-cell.same {
+  background: var(--sudoku-same);
+}
+
+.sudoku-cell.selected {
+  background: var(--sudoku-selected);
+  box-shadow: inset 0 0 0 2px var(--sudoku-accent);
+  z-index: 1;
+}
+
+.sudoku-cell.conflict {
+  color: var(--sudoku-danger);
+  background: #3a1d24;
+}
+
+.sudoku-cell.digit-hit {
+  background: var(--sudoku-same);
+  box-shadow: inset 0 0 0 2px var(--sudoku-accent);
+  z-index: 1;
+}
+
+.sudoku-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sudoku-pad-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 4px 0;
+  background: var(--sudoku-pad);
+  border: 0;
+  border-radius: 12px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sudoku-pad-key:active {
+  transform: scale(0.98);
+}
+
+.sudoku-pad-n {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.sudoku-pad-left {
+  font-size: 0.7rem;
+  color: var(--sudoku-muted);
+  min-height: 0.9em;
+}
+
+.sudoku-pad-key.done {
+  opacity: 0.4;
+}
+
+.sudoku-pad-key.active-filter {
+  background: var(--sudoku-selected);
+  box-shadow: inset 0 0 0 2px var(--sudoku-accent);
+}
+
+.sudoku-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.sudoku-actions > * {
+  flex: 1;
+}
+
+#confetti {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@media (min-width: 720px) {
+  .sudoku-app {
+    max-width: 520px;
+  }
+  .sudoku-cell {
+    font-size: 1.6rem;
+  }
+}
