@@ -12,7 +12,6 @@ import {
 const els = {
   board: document.getElementById("board"),
   pad: document.getElementById("pad"),
-  status: document.getElementById("status"),
   newGame: document.getElementById("new-game"),
   check: document.getElementById("check"),
   clear: document.getElementById("clear-cell"),
@@ -29,9 +28,8 @@ let selected = null;
 let digitFilter = null;
 let checkMode = false;
 
-function setStatus(msg, kind = "") {
-  els.status.textContent = msg;
-  els.status.dataset.kind = kind;
+function setStatus(_msg, _kind = "") {
+  /* status UI removed — board feedback only */
 }
 
 function cellId(r, c) {
@@ -162,8 +160,67 @@ function afterMove() {
   setStatus("Keep going.");
 }
 
+
+let confettiRaf = 0;
+
+function burstConfetti() {
+  const canvas = document.getElementById("confetti");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+  canvas.style.width = w + "px";
+  canvas.style.height = h + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const colors = ["#e8c547", "#8ecae6", "#7dce82", "#ff6b6b", "#f4f1ea", "#c77dff"];
+  const parts = Array.from({ length: 140 }, () => ({
+    x: Math.random() * w,
+    y: -20 - Math.random() * h * 0.3,
+    r: 3 + Math.random() * 5,
+    vx: -2 + Math.random() * 4,
+    vy: 2 + Math.random() * 5,
+    rot: Math.random() * Math.PI,
+    vr: -0.2 + Math.random() * 0.4,
+    color: colors[(Math.random() * colors.length) | 0],
+    life: 0,
+  }));
+
+  cancelAnimationFrame(confettiRaf);
+  const start = performance.now();
+  function frame(now) {
+    const t = (now - start) / 1000;
+    ctx.clearRect(0, 0, w, h);
+    let alive = 0;
+    for (const p of parts) {
+      p.vy += 0.08;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      p.life = t;
+      if (p.y < h + 40 && t < 3.2) {
+        alive += 1;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, 1 - t / 3.2);
+        ctx.fillRect(-p.r, -p.r * 0.4, p.r * 2, p.r * 0.8);
+        ctx.restore();
+      }
+    }
+    if (alive && t < 3.2) confettiRaf = requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, w, h);
+  }
+  confettiRaf = requestAnimationFrame(frame);
+}
+
 function showWin(on) {
   els.win.hidden = !on;
+  if (on) burstConfetti();
 }
 
 function checkBoard() {
@@ -341,3 +398,9 @@ document.addEventListener("pointerdown", onDocumentPointerDown);
 buildBoard();
 buildPad();
 newGame();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}

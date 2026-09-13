@@ -49,25 +49,16 @@ body {
   min-height: calc(100dvh - 24px - var(--safe-t) - var(--safe-b));
 }
 
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-h1 {
-  margin: 0;
-  font-size: 1.35rem;
-  letter-spacing: 0.04em;
-  font-weight: 700;
-}
-
 .toolbar,
 .actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.toolbar .diff {
+  margin-left: auto;
 }
 
 select,
@@ -106,22 +97,6 @@ button:active {
 .ghost {
   background: transparent;
   border: 1px solid var(--line);
-}
-
-#status {
-  /* Fixed slot so status text changes don't shove the board */
-  min-height: 2.6em;
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.3;
-}
-
-#status[data-kind="warn"] {
-  color: var(--danger);
-}
-
-#status[data-kind="ok"] {
-  color: var(--ok);
 }
 
 #board {
@@ -286,4 +261,14 @@ button:active {
 .pad-key.active-filter {
   background: #31415c;
   box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+
+#confetti {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
 }

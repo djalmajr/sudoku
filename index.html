@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#12141a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Sudoku" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="description" content="Play Sudoku in the browser. Mobile-first, no account." />
     <title>Sudoku</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icons/icon-180.png" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="app">
-      <header>
-        <h1>Sudoku</h1>
-        <label>
+      <div class="toolbar">
+        <button type="button" class="primary" id="new-game">New game</button>
+        <button type="button" class="ghost" id="check">Check</button>
+        <label class="diff">
           <span class="visually-hidden">Difficulty</span>
           <select id="difficulty" aria-label="Difficulty">
             <option value="easy" selected>Easy</option>
@@ -21,14 +28,7 @@
             <option value="hard">Hard</option>
           </select>
         </label>
-      </header>
-
-      <div class="toolbar">
-        <button type="button" class="primary" id="new-game">New game</button>
-        <button type="button" class="ghost" id="check">Check</button>
       </div>
-
-      <p id="status" role="status"></p>
 
       <div id="board" role="grid" aria-label="Sudoku board"></div>
 
@@ -38,6 +38,8 @@
         <button type="button" id="clear-cell">Clear cell</button>
       </div>
     </div>
+
+    <canvas id="confetti" aria-hidden="true"></canvas>
 
     <div id="win" hidden>
       <div class="win-card" role="dialog" aria-labelledby="win-title">
