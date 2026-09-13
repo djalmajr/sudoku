@@ -1,0 +1,14 @@
+name = "sudoku"
+compatibility_date = "2026-09-12"
+workers_dev = false
+
+# Static assets Worker — serve repo root at sudoku.djalmajr.dev
+[assets]
+directory = "."
+not_found_handling = "single-page-application"
+html_handling = "auto-trailing-slash"
+
+# Custom domain is attached in Cloudflare dashboard / wrangler routes
+[[routes]]
+pattern = "sudoku.djalmajr.dev/*"
+zone_name = "djalmajr.dev"
