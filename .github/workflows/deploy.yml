@@ -29,6 +29,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Pin so Action does not re-resolve "latest" into a surprise install path
+          wranglerVersion: "4.131.1"
           command: deploy
 
       - name: Smoke
