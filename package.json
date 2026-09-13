@@ -1,8 +1,8 @@
 {
   "name": "sudoku",
   "private": true,
-  "version": "1.0.0",
-  "description": "Responsive Sudoku game for mobile",
+  "version": "1.1.0",
+  "description": "Responsive Sudoku game for mobile — Preact + htm via htm-ui",
   "type": "module",
   "scripts": {
     "test": "node --test tests/sudoku.test.js",

@@ -1,10 +1,17 @@
-const CACHE = "sudoku-v1";
+const CACHE = "sudoku-htm-ui-v1";
 const ASSETS = [
   "./",
   "./index.html",
-  "./app.js",
-  "./styles.css",
-  "./src/sudoku.js",
+  "./styles/sudoku.css",
+  "./src/main.js",
+  "./src/app.js",
+  "./src/routes/play.js",
+  "./src/components/toolbar.js",
+  "./src/components/board.js",
+  "./src/components/number-pad.js",
+  "./src/components/win-dialog.js",
+  "./src/components/confetti.js",
+  "./src/lib/sudoku.js",
   "./favicon.svg",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
@@ -14,14 +21,19 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))),
-    ).then(() => self.clients.claim()),
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))),
+      )
+      .then(() => self.clients.claim()),
   );
 });
 

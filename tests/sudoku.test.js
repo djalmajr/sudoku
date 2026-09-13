@@ -12,7 +12,7 @@ import {
   isValidPlacement,
   isValidSudoku,
   solve,
-} from "../src/sudoku.js";
+} from "../src/lib/sudoku.js";
 
 describe("isValidSudoku / isSolved", () => {
   it("rejects duplicate values in a row", () => {
