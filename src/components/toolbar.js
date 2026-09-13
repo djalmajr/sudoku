@@ -9,7 +9,7 @@ export function Toolbar({ difficulty, onNewGame, onCheck, onDifficulty }) {
       <${Button}
         type="button"
         size="lg"
-        className="min-h-12 font-bold"
+        className="h-12 min-h-12 font-bold"
         onClick=${onNewGame}
       >
         New game
@@ -18,7 +18,7 @@ export function Toolbar({ difficulty, onNewGame, onCheck, onDifficulty }) {
         type="button"
         variant="outline"
         size="lg"
-        className="min-h-12"
+        className="h-12 min-h-12"
         onClick=${onCheck}
       >
         Check
@@ -28,7 +28,7 @@ export function Toolbar({ difficulty, onNewGame, onCheck, onDifficulty }) {
           aria-label="Difficulty"
           value=${difficulty}
           onChange=${(e) => onDifficulty(e.target.value)}
-          className="min-h-12"
+          className="h-12 min-h-12 box-border"
         >
           ${Object.values(DIFFICULTY).map(
             (d) => html`
